@@ -1,13 +1,19 @@
 # RAFT AI Engine — Retrieval-Augmented Fine-Tuning Pipeline
 
+> End-to-end RAFT pipeline combining domain RAG context with supervised model fine-tuning on Databricks & NVIDIA NIM API.
+
+### Tech Stack & Topics
+`raft` | `rag` | `fine-tuning` | `databricks` | `nvidia-nim` | `llm` | `python` | `data-engineering`
+
+
 An end-to-end implementation of the Retrieval-Augmented Fine-Tuning (RAFT) methodology. It bridges domain RAG context with Supervised Fine-Tuning (SFT) to teach language models how to reason over external documentation and filter distractor information.
 
-### 🛠️ Tech Stack & Topics
+###  Tech Stack & Topics
 `raft` `rag` `fine-tuning` `databricks` `nvidia-nim` `llm` `python` `data-engineering`
 
 ---
 
-### 📊 Pipeline Stages
+###  Pipeline Stages
 1. **Data Ingestion & Cleaning:** Bronze lakehouse ingestion using PySpark on Databricks.
 2. **Chunking & Question Generation:** Silver layer semantic splitting and synthetic question synthesis.
 3. **Golden Chunk & Distractor Pairing:** Gold layer dataset preparation for fine-tuning.
@@ -15,7 +21,7 @@ An end-to-end implementation of the Retrieval-Augmented Fine-Tuning (RAFT) metho
 
 ---
 
-### 🚀 Getting Started
+###  Getting Started
 ```bash
 git clone https://github.com/mrkrishna225/RAFT_AI_Chatbot.git
 cd RAFT_AI_Chatbot
