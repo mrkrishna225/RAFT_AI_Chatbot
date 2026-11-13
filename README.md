@@ -1,32 +1,32 @@
-# RAFT AI Engine — Retrieval-Augmented Fine-Tuning Pipeline
+# RAFT AI Chatbot
 
-> End-to-end RAFT pipeline combining domain RAG context with supervised model fine-tuning on Databricks & NVIDIA NIM API.
+Implementation of the [RAFT paper](https://arxiv.org/abs/2403.10131) — Retrieval-Augmented Fine-Tuning.
+The idea is to teach an LLM to answer questions using retrieved context by fine-tuning it on
+(question, context, answer) triples where some of the context chunks are distractors.
 
-### Tech Stack & Topics
-`raft` | `rag` | `fine-tuning` | `databricks` | `nvidia-nim` | `llm` | `python` | `data-engineering`
+## Pipeline
 
+The pipeline follows a lakehouse pattern on Databricks:
 
-An end-to-end implementation of the Retrieval-Augmented Fine-Tuning (RAFT) methodology. It bridges domain RAG context with Supervised Fine-Tuning (SFT) to teach language models how to reason over external documentation and filter distractor information.
+1. **Bronze** — Raw documents ingested and landed
+2. **Silver** — Documents chunked, questions generated from each chunk
+3. **Gold** — Each question paired with its golden chunk + distractor chunks, answers generated via NVIDIA NIM API
+4. **Training** — Fine-tune a base model (LoRA) on the gold dataset
 
-###  Tech Stack & Topics
-`raft` `rag` `fine-tuning` `databricks` `nvidia-nim` `llm` `python` `data-engineering`
+## What you need
 
----
+- Databricks workspace (or run the notebooks locally with PySpark)
+- NVIDIA API key for answer generation
+- HuggingFace token if pushing the fine-tuned model
+- GPU compute for training (Kaggle/Colab free tier works for small runs)
 
-###  Pipeline Stages
-1. **Data Ingestion & Cleaning:** Bronze lakehouse ingestion using PySpark on Databricks.
-2. **Chunking & Question Generation:** Silver layer semantic splitting and synthetic question synthesis.
-3. **Golden Chunk & Distractor Pairing:** Gold layer dataset preparation for fine-tuning.
-4. **Answer Generation & Training:** NVIDIA NIM API integration for dataset curation and LoRA fine-tuning.
+## Structure
 
----
-
-###  Getting Started
-```bash
-git clone https://github.com/mrkrishna225/RAFT_AI_Chatbot.git
-cd RAFT_AI_Chatbot
+```
+data_ingestion/    — Bronze layer notebooks
+chunking/          — Silver layer: splitting + question gen
+dataset_prep/      — Gold layer: distractor pairing + answer gen
+training/          — LoRA fine-tuning notebooks
 ```
 
-<div align="center">
-  <sub>Maintained by <a href="https://github.com/mrkrishna225"><b>mrkrishna225</b></a></sub>
-</div>
+See the notebooks for detailed step-by-step instructions.
