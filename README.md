@@ -1,32 +1,41 @@
 # RAFT AI Chatbot
 
-Implementation of the [RAFT paper](https://arxiv.org/abs/2403.10131) — Retrieval-Augmented Fine-Tuning.
-The idea is to teach an LLM to answer questions using retrieved context by fine-tuning it on
-(question, context, answer) triples where some of the context chunks are distractors.
+Implementation of the [RAFT paper](https://arxiv.org/abs/2403.10131) (Retrieval-Augmented Fine-Tuning).
+
+The idea: teach an LLM to answer questions using retrieved context by fine-tuning it on
+(question, context, answer) triples where some of the context chunks are intentionally
+irrelevant distractors. This forces the model to learn which chunks actually matter.
 
 ## Pipeline
 
-The pipeline follows a lakehouse pattern on Databricks:
+Follows a lakehouse pattern (Bronze / Silver / Gold):
 
-1. **Bronze** — Raw documents ingested and landed
-2. **Silver** — Documents chunked, questions generated from each chunk
-3. **Gold** — Each question paired with its golden chunk + distractor chunks, answers generated via NVIDIA NIM API
-4. **Training** — Fine-tune a base model (LoRA) on the gold dataset
+1. **Bronze** — Raw documents ingested into storage
+2. **Silver** — Documents chunked into passages, synthetic questions generated per chunk
+3. **Gold** — Each question paired with its golden chunk + distractor chunks.
+   Answers generated using NVIDIA NIM API
+4. **Training** — Fine-tune a base model with LoRA on the gold `.jsonl` dataset
 
-## What you need
+## Prerequisites
 
-- Databricks workspace (or run the notebooks locally with PySpark)
-- NVIDIA API key for answer generation
-- HuggingFace token if pushing the fine-tuned model
-- GPU compute for training (Kaggle/Colab free tier works for small runs)
+- Databricks workspace (or run notebooks locally with PySpark)
+- NVIDIA API key (for answer generation in the Gold step)
+- HuggingFace token (for downloading base models / pushing fine-tuned models)
+- GPU compute for training — Kaggle or Colab free tier works for small experiments
 
-## Structure
+## Notebooks
+
+The pipeline is a series of Jupyter/Databricks notebooks. Each one is self-contained
+with instructions at the top. Run them in order:
 
 ```
-data_ingestion/    — Bronze layer notebooks
-chunking/          — Silver layer: splitting + question gen
-dataset_prep/      — Gold layer: distractor pairing + answer gen
-training/          — LoRA fine-tuning notebooks
+1. data_ingestion    -> land raw docs (Bronze)
+2. chunking          -> split + generate questions (Silver)
+3. dataset_prep      -> pair chunks + generate answers (Gold)
+4. training          -> LoRA fine-tuning
 ```
 
-See the notebooks for detailed step-by-step instructions.
+## Security note
+
+Don't hardcode API keys in notebook cells. Use environment variables, Databricks secret
+scopes, or Azure Key Vault.
